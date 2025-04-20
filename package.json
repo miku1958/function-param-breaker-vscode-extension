@@ -2,7 +2,7 @@
   "name": "function-param-breaker",
   "displayName": "Function Param Breaker",
   "description": "Break function call parameters into multiple lines",
-  "publisher": "Mi",
+  "publisher": "miku1958",
   "license": "MIT",
   "repository": {
     "type": "git",

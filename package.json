@@ -1,0 +1,19 @@
+{
+  "name": "function-param-breaker",
+  "displayName": "Function Param Breaker",
+  "description": "Break function call parameters into multiple lines",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.50.0"
+  },
+  "activationEvents": ["onCommand:functionBreaker.breakParams"],
+  "main": "extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "functionBreaker.breakParams",
+        "title": "Break Function Parameters"
+      }
+    ]
+  }
+}

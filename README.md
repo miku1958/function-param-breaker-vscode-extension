@@ -2,6 +2,8 @@
 
 Break function call parameters into multiple lines in VS Code.
 
+Install page https://marketplace.visualstudio.com/items?itemName=miku1958.function-param-breaker
+
 ## Usage
 
 1. Place your cursor inside the parentheses of a function call.

@@ -6,26 +6,55 @@ function activate(context) {
 		if (!editor) return;
 
 		const document = editor.document;
-		const selection = editor.selection;
-		const text = document.getText(selection);
+		const position = editor.selection.active;
+		const text = document.getText();
 
-		// Match something like: Input.getVector(...)
-		const match = text.match(/^(\w+\.\w+)\(([^)]+)\)$/s);
-		if (!match) {
-			vscode.window.showErrorMessage("Please select a valid function call.");
+		const offset = document.offsetAt(position);
+
+		// Find the nearest opening parenthesis before the cursor
+		let start = offset;
+		while (start > 0 && text[start] !== '(') start--;
+		if (text[start] !== '(') {
+			vscode.window.showErrorMessage("Couldn't find opening parenthesis.");
 			return;
 		}
 
-		const funcName = match[1];
-		const args = match[2]
+		// Find function name before (
+		let funcNameEnd = start;
+		let funcNameStart = funcNameEnd - 1;
+		while (funcNameStart >= 0 && /[\w.\$]/.test(text[funcNameStart])) funcNameStart--;
+
+		const funcName = text.slice(funcNameStart + 1, funcNameEnd);
+
+		// Find the closing parenthesis matching this one
+		let end = start;
+		let depth = 1;
+		while (end < text.length - 1 && depth > 0) {
+			end++;
+			if (text[end] === '(') depth++;
+			else if (text[end] === ')') depth--;
+		}
+		if (depth !== 0) {
+			vscode.window.showErrorMessage("Couldn't find matching closing parenthesis.");
+			return;
+		}
+
+		const paramText = text.slice(start + 1, end);
+		const args = paramText
 			.split(',')
 			.map(arg => arg.trim())
+			.filter(Boolean)
 			.join(',\n\t');
 
 		const newText = `${funcName}(\n\t${args}\n)`;
 
+		const range = new vscode.Range(
+			document.positionAt(funcNameStart + 1),
+			document.positionAt(end + 1)
+		);
+
 		editor.edit(editBuilder => {
-			editBuilder.replace(selection, newText);
+			editBuilder.replace(range, newText);
 		});
 	});
 

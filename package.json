@@ -2,17 +2,32 @@
   "name": "function-param-breaker",
   "displayName": "Function Param Breaker",
   "description": "Break function call parameters into multiple lines",
+  "publisher": "Mi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/miku1958/function-param-breaker-vscode-extension.git"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.50.0"
   },
-  "activationEvents": ["onCommand:functionBreaker.breakParams"],
+  "activationEvents": [
+    "onCommand:functionBreaker.breakParams"
+  ],
   "main": "extension.js",
   "contributes": {
     "commands": [
       {
         "command": "functionBreaker.breakParams",
         "title": "Break Function Parameters"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "functionBreaker.breakParams",
+        "key": "ctrl+m",
+        "when": "editorTextFocus"
       }
     ]
   }

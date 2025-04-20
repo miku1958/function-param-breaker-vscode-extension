@@ -48,9 +48,10 @@ function activate(context) {
 		// Detect current indentation
 		const line = document.lineAt(document.positionAt(funcNameStart + 1));
 		const baseIndent = line.text.match(/^\s*/)[0];
-		const indent = baseIndent + (editor.options.insertSpaces ? ' '.repeat(editor.options.tabSize) : '\t');
+		const indentUnit = editor.options.insertSpaces ? ' '.repeat(editor.options.tabSize) : '\t';
+		const innerIndent = baseIndent + indentUnit;
 
-		const formatted = `${funcName}(\n${indent}${args.join(`,\n${indent}`)}\n${baseIndent})`;
+		const formatted = `${funcName}(\n${args.map(a => innerIndent + a).join(',\n')}\n${baseIndent})`;
 
 		const range = new vscode.Range(
 			document.positionAt(funcNameStart + 1),

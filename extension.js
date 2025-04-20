@@ -26,7 +26,7 @@ function activate(context) {
 
 		const funcName = text.slice(funcNameStart + 1, funcNameEnd);
 
-		// Find the closing parenthesis matching this one
+		// Find the closing parenthesis
 		let end = start;
 		let depth = 1;
 		while (end < text.length - 1 && depth > 0) {
@@ -43,10 +43,14 @@ function activate(context) {
 		const args = paramText
 			.split(',')
 			.map(arg => arg.trim())
-			.filter(Boolean)
-			.join(',\n\t');
+			.filter(Boolean);
 
-		const newText = `${funcName}(\n\t${args}\n)`;
+		// Detect current indentation
+		const line = document.lineAt(document.positionAt(funcNameStart + 1));
+		const baseIndent = line.text.match(/^\s*/)[0];
+		const indent = baseIndent + (editor.options.insertSpaces ? ' '.repeat(editor.options.tabSize) : '\t');
+
+		const formatted = `${funcName}(\n${indent}${args.join(`,\n${indent}`)}\n${baseIndent})`;
 
 		const range = new vscode.Range(
 			document.positionAt(funcNameStart + 1),
@@ -54,7 +58,7 @@ function activate(context) {
 		);
 
 		editor.edit(editBuilder => {
-			editBuilder.replace(range, newText);
+			editBuilder.replace(range, formatted);
 		});
 	});
 
